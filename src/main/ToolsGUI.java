@@ -3,20 +3,28 @@ package main;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import tools.MapGenerator;
 
 public class ToolsGUI extends JFrame{
+	JPanel panel = new JPanel();
+	
 	public ToolsGUI(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(640, 640);
-		setLocation(640, 300);
+		setLocation(200, 100);
+		setTitle("OverloadTools main");
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		init();
 	}
 	
 	private void init(){
+		add(panel);
+		
 		JButton mapGeneratorButton = new JButton("Map generator");
 		mapGeneratorButton.addActionListener(new ActionListener(){
 			@Override
@@ -24,6 +32,6 @@ public class ToolsGUI extends JFrame{
 				(new MapGenerator()).setVisible(true);
 			}
 		});
-		add(mapGeneratorButton);
+		panel.add(mapGeneratorButton);
 	}
 }
