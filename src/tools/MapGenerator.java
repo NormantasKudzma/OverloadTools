@@ -21,6 +21,8 @@ import org.json.JSONObject;
 public class MapGenerator extends JFrame{
 	JPanel panel = new JPanel();
 	JTextField pathTextBox = new JTextField(System.getProperty("user.dir") + "\\content\\level.png");
+	JTextField offsetTextBox = new JTextField("0.5", 4);
+	JTextField scaleTextBox = new JTextField("1", 4);
 	JButton generateButton = new JButton("Generate");
 	JLabel imageLabel = new JLabel();
 	BufferedImage img;
@@ -41,6 +43,10 @@ public class MapGenerator extends JFrame{
 		top.add(new JLabel("Path to level image"));
 		top.add(pathTextBox);
 		top.add(generateButton);
+		top.add(new JLabel("Offset"));
+		top.add(offsetTextBox);
+		top.add(new JLabel("Scale"));
+		top.add(scaleTextBox);
 		panel.add(top);
 		generateButton.addActionListener(new ActionListener() {
 			@Override
@@ -62,6 +68,9 @@ public class MapGenerator extends JFrame{
 			int[] pixels = new int[w * h];
 			img.getRGB(0, 0, w, h, pixels, 0, w);
 
+			int blockScale = Integer.parseInt(scaleTextBox.getText());
+			float offset = Float.parseFloat(offsetTextBox.getText());
+			
 			JSONArray scale = new JSONArray();
 			scale.put(1.0);
 			scale.put(1.0);
@@ -77,8 +86,8 @@ public class MapGenerator extends JFrame{
 						entity.put("entity", "" + color);
 						entity.put("scale", scale);
 						JSONArray position = new JSONArray();
-						position.put(j + 0.5f);
-						position.put(i + 0.5f);
+						position.put(j * blockScale + offset);
+						position.put(i * blockScale + offset);
 						entity.put("position", position);
 						string.append(entity.toString() + ",\n");
 					}
