@@ -1,6 +1,6 @@
 package main;
 
-public class Main {
+public class ToolsMain {
 	public static void main(String[] args){
 		(new ToolsGUI()).setVisible(true);
 	}
