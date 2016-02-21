@@ -169,22 +169,26 @@ public class MapGenerator extends JFrame{
 	
 	private String putRectJson(int x1, int x2, int y1, int y2, int w, int h, int blockScale, float offset){
 		float halfBlockScale = blockScale * 0.5f;
+		float tx1 = x1 * blockScale + offset;
+		float ty1 = h * blockScale - y1 * blockScale + offset;
+		float tx2 = x2 * blockScale + offset;
+		float ty2 = h * blockScale - y2 * blockScale + offset;
 		return new JSONStringer().array()
 			.object()
-				.key("x").value((x1 * blockScale + offset) - halfBlockScale)
-				.key("y").value((h * blockScale - y2 * blockScale + offset) + halfBlockScale)
+				.key("x").value(tx1 - halfBlockScale)
+				.key("y").value(ty2 - halfBlockScale)
 			.endObject()
 			.object()
-				.key("x").value((x1 * blockScale + offset) - halfBlockScale)
-				.key("y").value((h * blockScale - y1 * blockScale + offset) - halfBlockScale)
+				.key("x").value(tx1 - halfBlockScale)
+				.key("y").value(ty1 + halfBlockScale)
 			.endObject()
 			.object()
-				.key("x").value((x2 * blockScale + offset) + halfBlockScale)
-				.key("y").value((h * blockScale - y1 * blockScale + offset) + halfBlockScale)
+				.key("x").value(tx2 + halfBlockScale)
+				.key("y").value(ty1 + halfBlockScale)
 			.endObject()
 			.object()
-				.key("x").value((x2 * blockScale + offset) + halfBlockScale)
-				.key("y").value((h * blockScale - y2 * blockScale + offset) - halfBlockScale)
+				.key("x").value(tx2 + halfBlockScale)
+				.key("y").value(ty2 - halfBlockScale)
 			.endObject()
 		.endArray().toString();
 	}
