@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import tools.FontToPng;
 import tools.MapGenerator;
 
 public class ToolsGUI extends JFrame{
@@ -33,5 +34,14 @@ public class ToolsGUI extends JFrame{
 			}
 		});
 		panel.add(mapGeneratorButton);
+	
+		JButton fontToPngButton = new JButton("Font to png");
+		fontToPngButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				(new FontToPng()).setVisible(true);
+			}
+		});
+		panel.add(fontToPngButton);
 	}
 }

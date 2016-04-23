@@ -25,7 +25,8 @@ import org.json.JSONWriter;
 public class MapGenerator extends JFrame{
 	JPanel panel = new JPanel();
 	JTextField pathTextBox = new JTextField(System.getProperty("user.dir") + "\\content\\level.png");
-	JTextField offsetTextBox = new JTextField("0.5", 4);
+	JTextField offsetXTextBox = new JTextField("0.5", 4);
+	JTextField offsetYTextBox = new JTextField("0.5", 4);
 	JTextField scaleTextBox = new JTextField("1", 4);
 	JButton generateMapButton = new JButton("Generate map");
 	JButton generateCollidersButton = new JButton("Generate colliders");
@@ -51,6 +52,9 @@ public class MapGenerator extends JFrame{
 		colorNames.put(0xffffffff, "White");
 		colorNames.put(0xff000000, "Black");
 		colorNames.put(0xffff00ff, "Purple");
+		colorNames.put(0xff888888, "Gray");
+		colorNames.put(0xffffff00, "Yellow");
+		colorNames.put(0xffffcc00, "Orange");
 	}
 
 	private void init(){
@@ -61,7 +65,8 @@ public class MapGenerator extends JFrame{
 		top.add(generateMapButton);
 		top.add(generateCollidersButton);
 		top.add(new JLabel("Offset"));
-		top.add(offsetTextBox);
+		top.add(offsetXTextBox);
+		top.add(offsetYTextBox);
 		top.add(new JLabel("Scale"));
 		top.add(scaleTextBox);
 		panel.add(top);
@@ -94,7 +99,8 @@ public class MapGenerator extends JFrame{
 			img.getRGB(0, 0, w, h, pixels, 0, w);
 
 			int blockScale = Integer.parseInt(scaleTextBox.getText());
-			float offset = Float.parseFloat(offsetTextBox.getText());
+			float offsetX = Float.parseFloat(offsetXTextBox.getText());
+			float offsetY = Float.parseFloat(offsetYTextBox.getText());
 
 			StringBuilder string = new StringBuilder();
 			int white = 0xffffffff;
@@ -118,7 +124,7 @@ public class MapGenerator extends JFrame{
 							for (int k = start; k <= endX; ++k){
 								pixels[i * w + k] = white;
 							}
-							string.append(putRectJson(start, endX, i, i, w, h, blockScale, offset) + ",\n");
+							string.append(putRectJson(start, endX, i, i, w, h, blockScale, offsetX, offsetY) + ",\n");
 							start = -1;
 						}
 						else
@@ -145,7 +151,7 @@ public class MapGenerator extends JFrame{
 							for (int k = start; k <= endY; ++k){
 								pixels[k * w + j] = white;
 							}
-							string.append(putRectJson(j, j, start, endY, w, h, blockScale, offset) + ",\n");
+							string.append(putRectJson(j, j, start, endY, w, h, blockScale, offsetX, offsetY) + ",\n");
 							start = -1;
 						}
 						else
@@ -167,12 +173,12 @@ public class MapGenerator extends JFrame{
 		}
 	}
 	
-	private String putRectJson(int x1, int x2, int y1, int y2, int w, int h, int blockScale, float offset){
+	private String putRectJson(int x1, int x2, int y1, int y2, int w, int h, int blockScale, float offsetX, float offsetY){
 		float halfBlockScale = blockScale * 0.5f;
-		float tx1 = x1 * blockScale + offset;
-		float ty1 = h * blockScale - y1 * blockScale + offset;
-		float tx2 = x2 * blockScale + offset;
-		float ty2 = h * blockScale - y2 * blockScale + offset;
+		float tx1 = x1 * blockScale + offsetX;
+		float ty1 = h * blockScale - y1 * blockScale + offsetY;
+		float tx2 = x2 * blockScale + offsetX;
+		float ty2 = h * blockScale - y2 * blockScale + offsetY;
 		return new JSONStringer().array()
 			.object()
 				.key("x").value(tx1 - halfBlockScale)
@@ -204,11 +210,9 @@ public class MapGenerator extends JFrame{
 			img.getRGB(0, 0, w, h, pixels, 0, w);
 
 			int blockScale = Integer.parseInt(scaleTextBox.getText());
-			float offset = Float.parseFloat(offsetTextBox.getText());
+			float offsetX = Float.parseFloat(offsetXTextBox.getText());
+			float offsetY = Float.parseFloat(offsetYTextBox.getText());
 			
-			JSONArray scale = new JSONArray();
-			scale.put(1.0);
-			scale.put(1.0);
 			StringBuilder string = new StringBuilder();
 			int white = 0xffffffff;
 			int color = 0;
@@ -223,14 +227,20 @@ public class MapGenerator extends JFrame{
 							colorName = "" + color;
 						}
 						entity.put("entity", colorName);
+						
+						JSONArray scale = new JSONArray();
+						scale.put(j >= w / 2 ? -1.0 : 1.0);
+						scale.put(1.0);
+						
 						entity.put("scale", scale);
 						JSONArray position = new JSONArray();
-						position.put(j * blockScale + offset);
-						position.put(h * blockScale - i * blockScale + offset);
+						position.put(j * blockScale + offsetX);
+						position.put(h * blockScale - i * blockScale + offsetY);
 						entity.put("position", position);
 						string.append(entity.toString() + ",\n");
 					}
 				}
+				string.append("\n");
 			}
 			string.deleteCharAt(string.length() - 1);
 			string.deleteCharAt(string.length() - 1);
